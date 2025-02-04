@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng - Du lịch Bến Tre</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="shortcut icon" href="images/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+    <!-- Header giống trang chủ -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <a href="index.html" class="logo">Du Lịch Bến Tre</a>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Giới Thiệu</a></li>
+                <li><a href="tours.html">Tours Bến Tre</a></li>
+                <li><a href="ban-do.html">Bản Đồ</a></li>
+                <li><a href="lich-khoi-hanh.html">Lịch Khởi Hành</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Thêm icon giỏ hàng -->
+    <div class="cart-icon">
+        <a href="cart.html" class="cart-button">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count">0</span>
+        </a>
+    </div>
+
+    <div class="container my-5">
+        <h2 class="text-center mb-4">Giỏ hàng của bạn</h2>
+        <div id="cartItems" class="row">
+            <!-- Cart items will be inserted here -->
+        </div>
+        <div class="text-end mt-4">
+            <h4>Tổng cộng: <span id="cartTotal">0đ</span></h4>
+            <button class="btn btn-success" onclick="checkout()">Thanh toán</button>
+        </div>
+    </div>
+
+    <script>
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
+        }
+
+        function loadCart() {
+            const cartItems = document.getElementById('cartItems');
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let total = 0;
+
+            cartItems.innerHTML = cart.map((item, index) => {
+                total += item.total;
+                return `
+                    <div class="col-12 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <img src="${item.image}" alt="${item.name}" class="img-fluid rounded tour-cart-image">
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h5 class="card-title">${item.name}</h5>
+                                                <p class="card-text">
+                                                    <i class="fas fa-users"></i> Số người: ${item.quantity}<br>
+                                                    <i class="fas fa-calendar-alt"></i> Ngày khởi hành: ${item.date}<br>
+                                                    <i class="fas fa-tag"></i> Đơn giá: ${formatCurrency(item.price)}
+                                                </p>
+                                            </div>
+                                            <div class="text-end">
+                                                <h5 class="text-success">${formatCurrency(item.total)}</h5>
+                                                <button class="btn btn-danger btn-sm mt-2" onclick="removeItem(${index})">
+                                                    <i class="fas fa-trash"></i> Xóa
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('cartTotal').textContent = formatCurrency(total);
+        }
+
+        function removeItem(index) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            loadCart();
+            // Cập nhật số lượng trong icon giỏ hàng
+            document.querySelector('.cart-count').textContent = cart.length;
+        }
+
+        function checkout() {
+            alert('Vui lòng liên hệ trực tiếp Đỗ Tuấn Kiệt để đặt tour!');
+        }
+
+        // Load cart when page loads
+        window.addEventListener('load', loadCart);
+    </script>
+
+    <!-- Thêm style cho ảnh tour trong giỏ hàng -->
+    <style>
+        .tour-cart-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .tour-cart-image {
+                height: 120px;
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
